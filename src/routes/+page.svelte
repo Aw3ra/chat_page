@@ -1,4 +1,4 @@
-<!-- Button that makes a post request to /database/user/create -->
+Button that makes a post request to /database/user/create
 <script>
     import { postRequest } from "$lib/utility";
     import { page } from '$app/stores'
@@ -39,10 +39,6 @@
         fetchConvo(currentThread)
     }
     // On mount
-    onMount(async () => {
-        const email = $page.data.session?.user?.email || "";
-        getUser(email);
-    });
 
     // If $page changes, fetch the user. Make sure we have mounted the page first
     
