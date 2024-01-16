@@ -11,7 +11,6 @@
             <p class="text-left">{$page.data.session.user.name}</p>
             <button class="text-xs underline"on:click={signOut}>Sign out</button>
         </div>
-        
     </div>
     {/if}
 </div>
