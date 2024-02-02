@@ -1,25 +1,33 @@
-import { PrismaClient } from '@prisma/client'
 import { json } from "@sveltejs/kit";
 import type { RequestEvent } from "@sveltejs/kit";
+import { SHDW_PUBKEY } from "$env/static/private";
+import { decrypt } from "$lib/encryption";
 
-const prisma = new PrismaClient()
 
 // POST /api/user
 export async function POST({ request }: RequestEvent) {
-    const { name } = await request.json()
-    const user = await prisma.user.findUnique({
-        where: {
-            email: name,
-        },
-        include: {
-                accounts: true,
-                sessions: true,
-                conversations: true,
-        },
-    })
-    return json({
-        status: 200,
-        body: user,
-    })
+    try{
+        const {pubkey} = await request.json()
+        const url = `https://shdw-drive.genesysgo.net/${SHDW_PUBKEY}/${pubkey}.json`
+        const response = await fetch (url)
+        if (!response.ok) {
+            throw new Error(response.statusText)
+        }
+        let data = await response.json()
+
+        // const { data, iv, tag} = await response.json()
+        // const decrypted = decrypt(data, iv, tag)
+        return json({
+            status: 200,
+            body: data,
+        })
+    }
+    catch (error) {
+        return json({
+            status: 500,
+            body: "User not found",
+        })
+    }
+
 }
 

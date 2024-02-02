@@ -1,3 +1,58 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes fadeInLeft {
+    from {
+    opacity: 0;
+    transform: translatey(10px);
+    }
+    to {
+    opacity: 1;
+    transform: translatey(0);
+    }
+}
+
+.fade-in-left {
+    opacity: 0;
+    transform: translatey(-20px);
+    animation: fadeInLeft 0.5s ease-out forwards;
+}
+
+.btn {
+    @apply rounded-2xl text-black font-bold;
+    padding: 0.5rem 1rem;
+    border: 2px solid black;
+    
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  height: 1px;
+  background-color: var(--socials);
+  border-radius: 14px;
+}
+
+.message {
+    @apply rounded-2xl py-2 px-3 w-fit text-lg;
+    max-width: calc(100% - 1rem);
+    margin-right: 0;
+}
+.message .assistant {
+    margin-left: 0; 
+    max-width: calc(100% - 1rem);
+}

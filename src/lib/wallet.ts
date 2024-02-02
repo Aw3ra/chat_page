@@ -15,7 +15,7 @@ import {
 // @ts-ignore
 import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
 
-import { fetchUser, user } from "$lib/stores/user";
+import { user } from "$lib/stores/user";
 
 import {
     showSigninModal,
@@ -68,10 +68,10 @@ let debouceConnectTimer: NodeJS.Timeout | null = null;
 // If holder -> /user/[wallet]
 // If not holder -> /application
 const signin = async ($walletStore: walletStore) => {
-    isSignedIn.set(false);
     showSigninModal();
 
     try {
+
         const { data } = await fetch("/api/solana/create-message").then((res) => res.json());
 
         const encodedMessage = new TextEncoder().encode(data);
@@ -85,7 +85,8 @@ const signin = async ($walletStore: walletStore) => {
         const base58Signature = bs58.encode(signedMessage);
         
         if(!signedMessage) {
-        throw new Error("Message not signed.");
+            throw new Error("Message not signed.");
+            console.error("Message not signed.");
         }
 
         const { data : holder } = await fetch(`/api/solana/verify-message`, {
@@ -101,9 +102,10 @@ const signin = async ($walletStore: walletStore) => {
         isSignedIn.set(true);
 
         if(holder) {
-            goto(`/user/${$walletStore.publicKey?.toBase58()}`);
+            await user.fetchUser($walletStore?.publicKey.toBase58());
+            goto(`/home`);
         } else {
-            goto("/application");
+            goto("/");
         }
     } catch (err) {
         console.error(err);
@@ -116,27 +118,34 @@ const signin = async ($walletStore: walletStore) => {
 const debounce = ($walletStore: walletStore, timer: NodeJS.Timeout) => {
     if(timer) clearTimeout(timer);
 
-    setTimeout(() => fetchUser($walletStore?.publicKey.toBase58()), 500);
+    setTimeout(() => user.fetchUser($walletStore?.publicKey.toBase58()), 500);
 }
 
-walletStore.subscribe(($walletStore: walletStore) => {
-    if(!browser) return;
-
-    if($walletStore.connected) {
-        isSignedIn.set(true);
-
-        fetchUser($walletStore?.publicKey.toBase58());
-    }
-
-    if(!$walletStore.publicKey) {
-        user.update(($user) => {
-            return {
-                ...$user,
-                data: {
-                    card: null,
-                    nft: null,
-                }
+async function signIn ($walletStore: walletStore) {
+        isSigningIn.set(true);
+        if(!get(isSignedIn)) {
+            let signature = await $walletStore.signMessage(new Uint8Array(32), "utf8");
+            console.log(signature);
+            if(signature) {
+                isSignedIn.set(true);
+                await user.fetchUser($walletStore?.publicKey.toBase58());
+                goto(`/home`);
             }
-        });
+        }
+        isSigningIn.set(false);
+}
+
+walletStore.subscribe(async ($walletStore: walletStore) => {
+    if (!browser) return;
+    if($walletStore.disconnecting || !$walletStore.connected) {
+        isSignedIn.set(false);
+        goto("/");
+        return;
     }
-})
+    if($walletStore.connecting) {
+        if(get(isSigningIn)) return;
+        showSigninModal();
+        await signin($walletStore);
+        hideSigninModal();
+    }
+});

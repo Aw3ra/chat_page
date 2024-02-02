@@ -2,8 +2,7 @@
     import { onMount } from "svelte";
     import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
 
-    import Chat from "$lib/components/chat.svelte"
-    import Login from "$lib/components/login.svelte";
+    import Chat from "$lib/components/chat.svelte";
 
     onMount(async () => {
         // Wait for $walletStore to be set
@@ -13,7 +12,7 @@
     });
 </script>
 
-<Login />
+<Chat />
 
 
 
