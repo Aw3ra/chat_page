@@ -2,6 +2,7 @@ type conversation = {
     id: string;
     created: Date;
     name: string;
+    model: string;
 }
 
 
@@ -10,4 +11,9 @@ export type userDetails = {
     tier: string;
     paidUntil: Date;
     credits: number;
+}
+
+export type assistant = {
+    id: string;
+    name: string;
 }

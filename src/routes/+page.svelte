@@ -1,10 +1,9 @@
 <script>
     import { onMount } from "svelte";
     import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-
-    import Chat from "$lib/components/chat.svelte"
+    import { isConnectingWallet, isSigningIn } from "$lib/wallet";
+    import Signin from "$lib/modals/signin.svelte";
     import Login from "$lib/components/login.svelte";
-
     onMount(async () => {
         // Wait for $walletStore to be set
         while (!$walletStore.publicKey) {
@@ -13,7 +12,11 @@
     });
 </script>
 
-<Login />
+<div class="h-screen w-full flex">
+    {#if $isConnectingWallet === false && $isSigningIn === false}
+        <Login />
+    {/if}
+</div>
 
 
 

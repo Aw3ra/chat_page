@@ -15,8 +15,8 @@
 
 <WalletProvider {localStorageKey} {wallets} autoConnect={true} />
 <ConnectionProvider {network} />
-<div class="flex flex-col gap-2 justify-top items-center bg-cover" 
-style="min-height: calc(100vh - 140px); background-image: url(background1.jpg);">
+<div class="flex flex-col gap-2 justify-top items-center bg-cover w-full" 
+style="min-height: calc(100vh); background-image: url(background1.jpg);">
     <Navbar />
     <slot />
 </div>

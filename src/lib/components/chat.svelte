@@ -1,14 +1,18 @@
 <script>
     import { postRequest } from "$lib/utility";
     import { user } from "$lib/stores/user";
-    import { onMount } from "svelte";
     import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
     import { assistants, startingQuestions } from "$lib";
+    import { onMount } from "svelte";
     import editSvg from "$lib/svg/edit.svg";
     import deleteSvg from "$lib/svg/delete.svg";
     import sendSvg from "$lib/svg/send.svg";
     import Signin from "$lib/modals/signin.svelte";
-    import { showSigninModal, hideSigninModal } from "$lib/modals";
+    import Pay from "$lib/modals/pay.svelte";
+    import { showSigninModal, hideSigninModal, showPayModal } from "$lib/modals";
+    import { getEncoding, encodingForModel } from "js-tiktoken";
+
+
     /**
      * @type {any[]}
      */
@@ -50,22 +54,45 @@
         ignoreFade = false
     }
     async function sendMessage (message) {
+        let price = assistants.find((assistant) => assistant.name === $user.data?.conversations.find((convo) => convo.id === currentThread)?.model)?.priceMultiplier
+        let totalTokens = 0
         text = ""
         ignoreFade = true
         showLoading = true
+        const enc = getEncoding("cl100k_base");
+        let thisMessageTokens =  enc.encode(message).length * (price? price: 1)
+        
         currentConvo = [{role: "user", content: [{text: {value: message}}]}, ...currentConvo]
-        if (currentThread === "") {
-            currentThread = "new"
-            currentThread = await createThread()
-        }
-        await postRequest(
+        // For each message in the conversation, we need to encode it
+        // If the user doesnt have enough credits, we need to prompt them to buy more
+        if(thisMessageTokens < $user.data.credits) {
+            if (currentThread === "") {
+                currentThread = "new"
+                currentThread = await createThread()
+            }
+            await postRequest(
             "/api/openai/sendMessage", 
             { 
                 message:  message,
                 threadId: currentThread,
                 assistant: assistant
             });
-        await fetchConvo(currentThread)
+            await fetchConvo(currentThread)
+
+            for (let i = 0; i < currentConvo.length; i++) {
+                totalTokens += enc.encode(currentConvo[i].content[0].text.value).length * (price? price: 1)
+            }
+            await user.spendCredits($walletStore, totalTokens)
+        } else {
+            currentConvo = [{role: "assistant", content: [{text: {value: "Looks like you don't currently have enough credits for this message, please use the buy button to purchase more."}}]}, ...currentConvo]
+        }
+
+
+
+    }
+
+    async function buyCredits () {
+        showPayModal()
     }
 
     function getRandomMessage() {
@@ -75,32 +102,42 @@
 
     // On mount fetch the conversation from local storage
     onMount(async () => {
-        // currentThread = localStorage.getItem("currentThread")
-        // console.log(currentThread)
-        // if (currentThread) {
-        //     currentConvo = await user.fetchConversation(currentThread);
-        // } else {
-        //     currentThread = ""
-        // }
+        currentThread = localStorage.getItem("currentThread")
+        if (currentThread && currentThread in $user.data?.conversations) {
+            currentConvo = await user.fetchConversation(currentThread);
+        } else {
+            currentThread = ""
+        }
     })
+
 
 </script>
 
 
-<!-- An edit modal with just a basic entry box for changing the name -->
-
+<Pay />
 <Signin />
-<!-- DIv with background image -->
 <div 
-    class="flex flex-col justify-center items-center w-full text-gray-600">
+    class="flex flex-col justify-center items-center w-full text-gray-600 pt-[100px]">
     {#if $walletStore.publicKey && $user.data?.conversations}
         <div class="flex flex-row justify-between align-left border-gray-600/10 border-2 rounded-2xl mb-20 w-full max-w-4xl h-full  shadow-2xl"
         style="min-height: calc(100vh - 140px);">
-            <!-- Box for list of conversations -->
             <div class="flex flex-col border-gray-600/10 border-r-2 p-2 gap-2 basis-1/4 bg-slate-100/40 rounded-l-2xl">
-                <button class="font-bold text-lg uppercase text-left hover:bg-slate-200 p-2 rounded-2xl " on:click={newChat}>new chat</button>
+                <div class="rounded-2xl flex flex-col">
+                    <button 
+                        class="hover:bg-slate-200 font-bold text-lg uppercase text-left rounded-2xl p-2" on:click={newChat}>new chat
+                    </button>
+                    <div class= "flex flex-row justify-between">
+                        <h class="text-sm italic p-2">Credits: <strong>{$user.data.credits}</strong></h>
+                        <button 
+                            on:click={buyCredits}
+                                class="hover:bg-slate-200 font-semibold text-sm uppercase text-right rounded-2xl p-2">buy
+                        </button>
+                    </div>
+                </div>
+                <!-- A solid line spanning the width of the container -->
+                <div class="border-b-2 border-gray-600/20 w-full"></div>
                 {#each $user.data?.conversations.slice().reverse() as conversation, index}
-                    <button on:click={() => fetchConvo((conversation.id))} class="flex flex-row justify-between items-center w-full gap-2 hover:bg-slate-200 p-2 rounded-2xl fade-in-left h-12" style="animation-delay: {index * 0.2}s;">
+                    <button on:click={() => fetchConvo((conversation.id))} class="flex flex-row justify-between items-center w-full gap-2 hover:bg-slate-200 p-2 rounded-2xl fade-in-left" style="animation-delay: {index * 0.2}s;">
                         <div class="overflow-hidden text-ellipsis whitespace-nowrap mr-4">
                             {conversation.name}
                         </div>
@@ -130,12 +167,12 @@
                     </div>
 
                 {/if}
-                <div class="flex flex-col flex-col-reverse p-2 gap-3 overflow-scroll font-lg">
+                <div class="flex flex-col flex-col-reverse p-2 gap-3 overflow-auto font-lg">
                     {#each currentConvo as message, index}
                         {#if message.content[0].text.value !== ""}
                             {#if message.role == "assistant"}
                                 {#if index === 0 && ignoreFade}
-                                    <div class="message mr-auto fade-in-left bg-blue-300">
+                                    <div class="message mr-auto fade-in-left bg-gray-50">
                                         {message.content[0].text.value}
                                     </div>
                                 {:else}

@@ -27,6 +27,7 @@ export async function POST({ request }: RequestEvent) {
             conversations: [],
             tier: "free",
             paidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 3)),
+            credits: 0,
         }
         // const encryption = encrypt(JSON.stringify(newUser));
         // Convert the user type to a buffer

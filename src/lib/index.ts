@@ -2,12 +2,32 @@ export const assistants = [
     {
         name: "GPT 3.5",
         id: "asst_JDuAOrAyViXMVwMPEFyGlfPp",
+        priceMultiplier: 1,
     },
     {
         name: "GPT 4",
         id: "asst_HuN786BrRzdGc5s7w7WGQLWe",
+        priceMultiplier: 45,
     },
 ]
+
+export const tiers = [
+    {
+      amount: 0.1,
+      tokens: 1000000,
+      price: 0
+    },
+    {
+      amount: 0.2,
+      tokens: 10000000,
+      price: 0
+    },
+    {
+      amount: 1,
+      tokens: 100000000,
+      price: 0
+    }
+  ]
 
 
 export const sentences = [

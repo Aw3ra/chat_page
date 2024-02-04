@@ -16,4 +16,8 @@ export async function postRequest(url: string, data: object) {
     return response.json();
 }
 
+export function getTokenCount(message: string) {
+    return message.split(' ').length;
+}
+
 

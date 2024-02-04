@@ -1,13 +1,17 @@
-<dialog id="signin_modal" class="modal bg-slate-100 rounded-2xl p-2">
+<dialog id="signin_modal" class="modal">
     <div class="modal-box">
-      <div class="flex gap-4 flex-wrap">
-        <div class="">
-          <button class="btn btn-ghost loading"></button>
-        </div>
+      <div class="flex gap-4 flex-wrap text-center">
         <div>
-          <h3 class="font-bold text-lg">Signing In...</h3>
-          <p class="text-sm">Sign the following message to prove you own this wallet.</p>
+          <div class="flex flex-row pb-2 justify-center"> <!-- Updated classes here -->
+            <div class="text-center"> <!-- Center the text -->
+              <h3 class="font-bold text-4xl inline-block">Sign here </h3> <!-- Inline-block for text -->
+            </div>
+            <svg class="w-12 h-12 bounce" viewBox="0 0 24 24"> <!-- SVG icon -->
+              <path fill="currentColor" d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"></path>
+            </svg>
+          </div>
+          <p class="text-sm font-semibold">Sign the following message to prove you own this wallet.</p>
         </div>
       </div>
     </div>
-</dialog>
+  </dialog>

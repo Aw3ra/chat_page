@@ -27,7 +27,7 @@ import {
     SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 
-import { clusterApiUrl } from "@solana/web3.js";
+import { clusterApiUrl, Transaction } from "@solana/web3.js";
 
 export const wallets = [
     new PhantomWalletAdapter(),
@@ -69,9 +69,8 @@ let debouceConnectTimer: NodeJS.Timeout | null = null;
 // If not holder -> /application
 const signin = async ($walletStore: walletStore) => {
     showSigninModal();
-
     try {
-
+        isSigningIn.set(true);
         const { data } = await fetch("/api/solana/create-message").then((res) => res.json());
 
         const encodedMessage = new TextEncoder().encode(data);
@@ -99,10 +98,11 @@ const signin = async ($walletStore: walletStore) => {
             }),
         }).then((res) => res.json());
 
-        isSignedIn.set(true);
+
 
         if(holder) {
             await user.fetchUser($walletStore?.publicKey.toBase58());
+            isSignedIn.set(true);
             goto(`/home`);
         } else {
             goto("/");
@@ -121,18 +121,13 @@ const debounce = ($walletStore: walletStore, timer: NodeJS.Timeout) => {
     setTimeout(() => user.fetchUser($walletStore?.publicKey.toBase58()), 500);
 }
 
-async function signIn ($walletStore: walletStore) {
-        isSigningIn.set(true);
-        if(!get(isSignedIn)) {
-            let signature = await $walletStore.signMessage(new Uint8Array(32), "utf8");
-            console.log(signature);
-            if(signature) {
-                isSignedIn.set(true);
-                await user.fetchUser($walletStore?.publicKey.toBase58());
-                goto(`/home`);
-            }
-        }
-        isSigningIn.set(false);
+export async function purchase($walletStore: walletStore, transaction: Transaction) {
+    try{
+        $walletStore?.signTransaction(transaction);
+    }
+    catch(err) {
+        console.log(err);
+    }
 }
 
 walletStore.subscribe(async ($walletStore: walletStore) => {

@@ -19,7 +19,7 @@
 
 </script>
 
-<div class="text-white text-2xl items-left w-full p-4">
+<div class="text-white text-2xl w-full p-4 fixed top-0 left-0 z-50">
     <SigninModal />
     {#if $isConnectingWallet}
         <WalletModal
@@ -32,7 +32,7 @@
         <img src="/favicon.png" class="h-14 w-114" />
 
         <div>
-          {#if $walletStore.publicKey}
+          {#if $walletStore.publicKey && $isSignedIn}
             <div class="flex">
               <button class="btn btn-sm text-sm flex flex-row items-center gap-1" on:click={$walletStore.disconnect}>
                 <div class="h-4 w-4">
