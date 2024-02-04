@@ -1,3 +1,89 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes fadeInLeft {
+    from {
+    opacity: 0;
+    transform: translatey(10px);
+    }
+    to {
+    opacity: 1;
+    transform: translatey(0);
+    }
+}
+
+.fade-in-left {
+    opacity: 0;
+    transform: translatey(-20px);
+    animation: fadeInLeft 0.5s ease-out forwards;
+}
+
+.btn {
+    @apply rounded-2xl text-black font-bold;
+    padding: 0.5rem 1rem;
+    border: 2px solid black;
+    
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  height: 1px;
+  background-color: var(--socials);
+  border-radius: 14px;
+}
+
+.message {
+    @apply rounded-2xl py-2 px-3 w-fit text-lg;
+    max-width: calc(100% - 1rem);
+    margin-right: 0;
+}
+.message .assistant {
+    margin-left: 0; 
+    max-width: calc(100% - 1rem);
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(0);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateX(30px); /* Adjust this value for distance */
+        animation-timing-function: cubic-bezier(0, 0, 0.1, 1);
+    }
+}
+
+.bounce {
+    animation: bounce 1s infinite; /* Adjust '2s' for speed */
+}
+
+.modal {
+    @apply bg-[#feefe0] rounded-3xl p-2 border-[#bd60c1]/60 border-2 shadow-2xl text-gray-600;
+}
+
+.button {
+    @apply bg-blue-500 hover:bg-blue-700 text-white p-2 rounded-2xl text-base shadow-2xl;
+    transition: all 0.3s ease;
+}
+.button:hover {
+    @apply bg-blue-700;
+    transform: translateY(-5px);
+}
+
+
+

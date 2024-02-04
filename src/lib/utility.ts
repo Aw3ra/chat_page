@@ -11,9 +11,13 @@ export async function postRequest(url: string, data: object) {
 
     if (!response.ok) {
         // Handle HTTP errors
-        throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
     }
     return response.json();
+}
+
+export function getTokenCount(message: string) {
+    return message.split(' ').length;
 }
 
 
