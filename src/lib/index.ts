@@ -15,17 +15,17 @@ export const tiers = [
     {
       amount: 0.1,
       tokens: 1000000,
-      price: 0
+      price: 0.011
     },
     {
       amount: 0.2,
       tokens: 10000000,
-      price: 0
+      price: 0.11
     },
     {
       amount: 1,
       tokens: 100000000,
-      price: 0
+      price: 1.1
     }
   ]
 

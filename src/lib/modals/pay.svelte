@@ -15,7 +15,6 @@
     const tx = await postRequest("/api/solana/create-transaction", {amount: amount, from: $walletStore.publicKey.toBase58()});
     const transaction = VersionedTransaction.deserialize(Buffer.from(tx.serialized, 'base64'));
     try{
-
       let signature = await $walletStore.sendTransaction(transaction, connection);
       // Wait 15 seconds
       isLoading = true;

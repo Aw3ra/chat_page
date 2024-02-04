@@ -17,32 +17,44 @@ const connection = new Connection(env.PUBLIC_RPC_URL);
 
 
 export async function POST({ request }: RequestEvent) {
-    const {
-        amount = 0,
-        from = "",
-    } = await request.json();
-    const total = amount*LAMPORTS_PER_SOL;
-    // Round total up to the nearest whole number
-    const lamports = Math.ceil(total);
-    const latestBlockhash = await connection.getLatestBlockhash();
-    const toPubkey = new PublicKey(process.env.TO_PUBLIC_ADDRESS);
-    const instructions = [];
-    const fromPubkey = new PublicKey(from);
-    instructions.push(
-        SystemProgram.transfer({
-            fromPubkey: fromPubkey,
-            toPubkey: toPubkey,
-            lamports: lamports,
-        })
-    );
-    const messageV0  = new TransactionMessage({
-        instructions,
-        payerKey: fromPubkey,
-        recentBlockhash: latestBlockhash.blockhash,
-    }).compileToV0Message();
-    const transaction = new VersionedTransaction(messageV0);
+    try{
+        const {
+            amount = 0,
+            from = "",
+        } = await request.json();
+        if (!from) {
+            return json({error: "from is required"});
+        }
+        if (!amount || amount === 0) {
+            return json({error: "amount is required"});
+        }
+        const total = amount*LAMPORTS_PER_SOL;
+        // Round total up to the nearest whole number
+        const lamports = Math.ceil(total);
+        const latestBlockhash = await connection.getLatestBlockhash();
+        const toPubkey = new PublicKey(process.env.TO_PUBLIC_ADDRESS);
+        const instructions = [];
+        const fromPubkey = new PublicKey(from);
+        instructions.push(
+            SystemProgram.transfer({
+                fromPubkey: fromPubkey,
+                toPubkey: toPubkey,
+                lamports: lamports,
+            })
+        );
+        const messageV0  = new TransactionMessage({
+            instructions,
+            payerKey: fromPubkey,
+            recentBlockhash: latestBlockhash.blockhash,
+        }).compileToV0Message();
+        const transaction = new VersionedTransaction(messageV0);
 
-    const serialized = Buffer.from(transaction.serialize()).toString('base64');
-    
-    return json({serialized});
+        const serialized = Buffer.from(transaction.serialize()).toString('base64');
+        
+        return json({serialized});
+    }
+    catch(e){
+        console.error(e);
+        return json({error: "An error occurred"});
+    }
 }

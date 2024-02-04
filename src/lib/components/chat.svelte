@@ -2,7 +2,7 @@
     import { postRequest } from "$lib/utility";
     import { user } from "$lib/stores/user";
     import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
-    import { assistants, startingQuestions } from "$lib";
+    import { assistants, startingQuestions, tiers } from "$lib";
     import { onMount } from "svelte";
     import editSvg from "$lib/svg/edit.svg";
     import deleteSvg from "$lib/svg/delete.svg";
