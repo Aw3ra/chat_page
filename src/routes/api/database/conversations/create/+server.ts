@@ -1,8 +1,10 @@
 import { OpenAI } from 'openai';
-import { OPENAI_APIKEY } from '$env/static/private'
 import { postRequest } from '$lib/utility';
 import { json } from "@sveltejs/kit";
 import type { userDetails } from '$lib/types';
+const {
+    OPENAI_APIKEY
+} = process.env;
 
 const openai = new OpenAI({apiKey: OPENAI_APIKEY});
 

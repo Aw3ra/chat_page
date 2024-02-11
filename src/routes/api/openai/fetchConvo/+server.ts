@@ -1,6 +1,8 @@
 import { OpenAI } from 'openai';
-import { OPENAI_APIKEY } from '$env/static/private'
 import { json } from "@sveltejs/kit";
+const {
+    OPENAI_APIKEY
+} = process.env;
 
 const openai = new OpenAI({apiKey: OPENAI_APIKEY});
 
