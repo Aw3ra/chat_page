@@ -28,7 +28,7 @@ export async function POST({ request }: RequestEvent) {
             conversations: [],
             tier: "free",
             paidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 3)),
-            credits: 10000,
+            credits: totalCredits,
         }
         const encryption = encrypt(JSON.stringify(newUser));
         const newUserBuffer = Buffer.from(JSON.stringify(encryption, null, 2));

@@ -13,6 +13,7 @@ export async function POST({ request }: RequestEvent) {
         const url = `https://shdw-drive.genesysgo.net/${SHDW_PUBKEY}/${pubkey}.json`
         const response = await fetch (url)
         if (!response.ok) {
+            console.log(response)
             throw new Error(response.statusText)
         }
         // let data = await response.json()

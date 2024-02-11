@@ -12,7 +12,6 @@
     import { getEncoding, encodingForModel } from "js-tiktoken";
     import { userModal } from "$lib/stores/userCreate";
 
-
     /**
      * @type {any[]}
      */

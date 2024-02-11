@@ -11,6 +11,7 @@ import type { userDetails } from "$lib/types"
 // POST /api/user
 export async function POST({ request }: RequestEvent) {
     const { pubkey, data } = await request.json()
+    console.log(data)
     const connection = new Connection(RPC_URL)
     // SOLGPT private key is a string, convert it to a Keypair
     const keypair = Keypair.fromSecretKey(

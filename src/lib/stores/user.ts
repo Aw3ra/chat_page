@@ -26,9 +26,8 @@ function createUserStore() {
                 userModal.set({ type: "creating" });
                 response = await postRequest("/api/database/user/create", { pubkey: publicKey });
             }
-            update(state => ({ ...state, data: response.body }));
+            update(state => ({ ...state, data: JSON.parse(response.body) }));
         } catch (error) {
-            console.error("Error fetching/creating user:", error);
             update(state => ({ ...state, error: true }));
         } finally {
             update(state => ({ ...state, loading: false }));
@@ -52,10 +51,7 @@ function createUserStore() {
         try {
             const thread = await postRequest("/api/database/conversations/create", { content, assistant });
             const date = new Date();
-            // Get the assistant name from the assistants variable, it is an array of assistants in the form of objects
             const name = assistants.find(asst => asst.id === assistant)?.name;
-
-
             update(state => {
                 if (state.data) {
                     state.data.conversations.push(

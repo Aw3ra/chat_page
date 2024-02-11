@@ -31,11 +31,20 @@ export const encrypt = (str: string) => {
 }
 
 export const decrypt = (data: string, iv: string, tag: string) => {
-    const buff = Buffer.from(data, 'base64');
-    const decipher = crypto.createDecipheriv(ecnryption_method, ENCRYPTION_KEY, iv)
+    // Convert hex-encoded key to Buffer
+    const keyBuffer = Buffer.from(ENCRYPTION_KEY, 'hex');
+    // Decode IV and tag from base64 to Buffer
+    const ivBuffer = Buffer.from(iv, 'base64');
+    const tagBuffer = Buffer.from(tag, 'base64');
+    // Assume data is base64-encoded, so decode it
+    const dataBuffer = Buffer.from(data, 'base64');
 
-    return (
-        decipher.update(buff.toString('utf8'), 'hex', 'utf8') +
-        decipher.final('utf8')
-    )
-}
+    const decipher = crypto.createDecipheriv(ecnryption_method, keyBuffer, ivBuffer);
+    // Set the authentication tag
+    decipher.setAuthTag(tagBuffer);
+
+    // Decrypt the data
+    let decrypted = decipher.update(dataBuffer, undefined, 'utf8'); // input encoding is not needed for Buffers
+    decrypted += decipher.final('utf8');
+    return decrypted;
+};
