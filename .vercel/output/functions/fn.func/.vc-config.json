@@ -1,6 +1,0 @@
-{
-	"runtime": "nodejs20.x",
-	"handler": "..\\..\\..\\..\\..\\..\\Users\\Braydens PC\\Documents\\Programming\\chat_page\\.svelte-kit\\vercel-tmp\\index.js",
-	"launcherType": "Nodejs",
-	"experimentalResponseStreaming": true
-}
