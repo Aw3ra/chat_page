@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { Buffer } from "buffer";
 
 const {
     ENCRYPTION_KEY = "",
@@ -8,12 +9,12 @@ const ecnryption_method = "aes-256-gcm";
 
 export const encrypt = (str: string) => {
     // create a random initialization vector
-    const iv = crypto.randomBytes(12).toString("base64");
+    const iv = crypto.randomBytes(12);
   
     // create a cipher object
     const cipher = crypto.createCipheriv(
         ecnryption_method,
-        ENCRYPTION_KEY,
+        Buffer.from(ENCRYPTION_KEY, 'hex'),
         iv
     );
   
@@ -26,21 +27,15 @@ export const encrypt = (str: string) => {
     // retrieve the authentication tag for the encryption
     const tag = cipher.getAuthTag();
     
-    return { data, iv, tag };
+    return { data, iv: iv.toString('base64'), tag: tag.toString('base64') };
 }
 
-export const decrypt = (encryptedData, ivString, tagBuffer) => {
-    // Convert IV and tag from their respective formats to Buffers
-    const iv = Buffer.from(ivString, 'base64');
-    const tag = Buffer.from(tagBuffer.data);
+export const decrypt = (data: string, iv: string, tag: string) => {
+    const buff = Buffer.from(data, 'base64');
+    const decipher = crypto.createDecipheriv(ecnryption_method, ENCRYPTION_KEY, iv)
 
-    // Create a decipher
-    const decipher = crypto.createDecipheriv(ecnryption_method, Buffer.from(ENCRYPTION_KEY, 'base64'), iv);
-    decipher.setAuthTag(tag);
-
-    // Perform the decryption
-    let decrypted = decipher.update(encryptedData, 'base64', 'utf8');
-    decrypted += decipher.final('utf8');
-
-    return decrypted;
+    return (
+        decipher.update(buff.toString('utf8'), 'hex', 'utf8') +
+        decipher.final('utf8')
+    )
 }

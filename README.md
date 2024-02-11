@@ -1,38 +1,19 @@
-# create-svelte
+# Speakly
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Speakly is a blockchain-based chatbot service that uses OpenAI's ChatGPT to provide conversational AI capabilities. It is designed to be used in a decentralized manner, with on-chain encrypted user data and pay-as-you-go credits. Speakly is built on Solana, a high-performance blockchain.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Pay as you go**: Users can purchase credits to use the service, and only pay for what they use.
+- **On-chain encrypted user data**: User data is stored on-chain and encrypted, ensuring privacy and security.
+- **Full ChatGPT models**: Speakly supports full ChatGPT models, with plans to support future open-source models.
+- **Decentralized**: Speakly is built on Solana, a high-performance blockchain, ensuring scalability and low transaction costs.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Usage
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+To use Speakly, users can sign up and purchase credits. They can then interact with the chatbot using the credits they have purchased. Speakly provides a conversational AI experience, allowing users to ask questions, get recommendations, and more.
 
-## Developing
+## Future 
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Speakly plans to support future open-source models, allowing users to choose from a variety of conversational AI models. This will enable users to have more control over the type of AI they interact with.
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

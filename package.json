@@ -42,11 +42,13 @@
 		"@svelte-on-solana/wallet-adapter-ui": "^1.0.21-alpha.0",
 		"@sveltejs/adapter-vercel": "^5.1.0",
 		"bs58": "^5.0.0",
+		"buffer": "^6.0.3",
 		"crypto-js": "^4.2.0",
 		"dotenv": "^16.3.1",
 		"js-tiktoken": "^1.0.10",
 		"jsonwebtoken": "^9.0.2",
 		"openai": "^4.24.1",
+		"rollup-plugin-polyfill-node": "^0.13.0",
 		"svelte-icons": "^2.1.0",
 		"vite-plugin-node-polyfills": "^0.19.0"
 	}

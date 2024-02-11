@@ -32,7 +32,7 @@
 
     // Trigger the typing effect when the component mounts
     onMount(() => {
-        typeSentences(sentences, 60, 3000);
+        typeSentences(sentences, 60, 2000);
     });
 </script>
 
@@ -42,10 +42,19 @@
         overflow: hidden;
         white-space: nowrap;
     }
+    .btn{
+
+        transition: all 0.3s;
+    }
+    .btn:hover{
+        background-color: rgb(255 237 213);
+        transform: scale(1.1);
+    }
 </style>
 
 <div class="w-full flex-grow flex flex-col gap-4 justify-center items-center">
+    <img src="/favicon.png" class="w-32 h-32" alt="logo" />
     <h1 class="text-6xl font-bold">Get Started</h1>
     <p id="sentence" class="text-2xl font-semibold"></p>
-    <button class="btn text-lg font-black bg-orange-100/70" on:click={connectWallet}>Connect</button>
+    <button class="btn text-lg font-black bg-orange-100/70 hover:" on:click={connectWallet}>Connect</button>
 </div>

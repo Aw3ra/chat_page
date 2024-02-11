@@ -3,6 +3,7 @@ import { postRequest } from "$lib/utility";
 import type { userDetails } from "$lib/types";
 import { assistants } from "$lib";
 import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
+import { userModal } from "$lib/stores/userCreate";
 
 // Utility function for delaying execution
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -22,6 +23,7 @@ function createUserStore() {
         try {
             let response = await postRequest("/api/database/user/find", { pubkey: publicKey });
             if (response.status !== 200) {
+                userModal.set({ type: "creating" });
                 response = await postRequest("/api/database/user/create", { pubkey: publicKey });
             }
             update(state => ({ ...state, data: response.body }));

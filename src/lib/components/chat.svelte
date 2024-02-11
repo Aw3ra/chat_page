@@ -7,10 +7,10 @@
     import editSvg from "$lib/svg/edit.svg";
     import deleteSvg from "$lib/svg/delete.svg";
     import sendSvg from "$lib/svg/send.svg";
-    import Signin from "$lib/modals/signin.svelte";
-    import Pay from "$lib/modals/pay.svelte";
+    import ChangingModal from "$lib/modals/modal.svelte";
     import { showSigninModal, hideSigninModal, showPayModal } from "$lib/modals";
     import { getEncoding, encodingForModel } from "js-tiktoken";
+    import { userModal } from "$lib/stores/userCreate";
 
 
     /**
@@ -92,6 +92,7 @@
     }
 
     async function buyCredits () {
+        userModal.set({type: "pay"})
         showPayModal()
     }
 
@@ -114,10 +115,9 @@
 </script>
 
 
-<Pay />
-<Signin />
+<ChangingModal />
 <div 
-    class="flex flex-col justify-center items-center w-full text-gray-600 pt-[100px]">
+    class="flex flex-col justify-center items-center w-full text-gray-600 pt-[100px] h-screen">
     {#if $walletStore.publicKey && $user.data?.conversations}
         <div class="flex flex-row justify-between align-left border-gray-600/10 border-2 rounded-2xl mb-20 w-full max-w-4xl h-full  shadow-2xl"
         style="min-height: calc(100vh - 140px);">
@@ -155,7 +155,7 @@
             <div class="flex flex-col justify-end basis-3/4 bg-slate-100/40 rounded-r-2xl">
                 {#if currentThread === ""}
                     <div class="flex flex-row justify-start align-left p-2  w-1/2 gap-2 ">
-                        <select bind:value={assistant} class="rounded-2xl text-xl p-2 bg-slate-300/40">
+                        <select bind:value={assistant} class="rounded-lg text-sm font-bold p-1 bg-slate-300/40 border-solid hover:border-gray-400 border-2">
                             {#each assistants as assistant}
                                 <option value={assistant.id}>{assistant.name}</option>
                             {/each}

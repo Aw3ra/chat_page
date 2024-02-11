@@ -2,7 +2,6 @@
     import { onMount } from "svelte";
     import { walletStore } from "@svelte-on-solana/wallet-adapter-core";
     import { isConnectingWallet, isSigningIn } from "$lib/wallet";
-    import Signin from "$lib/modals/signin.svelte";
     import Login from "$lib/components/login.svelte";
     onMount(async () => {
         // Wait for $walletStore to be set

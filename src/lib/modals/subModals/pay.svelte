@@ -6,12 +6,15 @@
   import { hidePayModal } from "$lib/modals";
   import { user } from "$lib/stores/user";
   import { tiers } from "$lib";
+  import { Buffer } from "buffer";
+  import { userModal } from "$lib/stores/userCreate";
 
   let isLoading = false;
 
   const connection = new Connection("https://api.devnet.solana.com");
 
   async function selectTipAmount(amount: number, tokens: number = 0) {
+
     const tx = await postRequest("/api/solana/create-transaction", {amount: amount, from: $walletStore.publicKey.toBase58()});
     const transaction = VersionedTransaction.deserialize(Buffer.from(tx.serialized, 'base64'));
     try{
@@ -34,16 +37,6 @@
     return sol;
 
   }
-
-  onMount(async () => {
-    const url = "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd";
-    const response = await fetch(url);
-    const data = await response.json();
-    const solPrice = data.solana.usd;
-    for (let i = 0; i < tiers.length; i++) {
-      tiers[i].price = await calcTokens(tiers[i].tokens, solPrice);
-    }
-  });
 
   function convertFromZerosToName (number: number) {
     // If it is a million, billion, trillion, etc.
@@ -91,7 +84,7 @@
             </div>
             <div class="flex flex-row justify-center gap-2">
               {#each tiers as tier}
-              <button class="button" on:click={selectTipAmount(tier.price, tier.tokens)}>
+              <button class="button" on:click={async() => await selectTipAmount(tier.price, tier.tokens)}>
                 <div class="flex flex-col justify-center items-center rounded-2xl p-2">
                   <h3 class="text-2xl font-semibold">+{convertFromZerosToName(tier.tokens)} tokens</h3>
                   <p class="text-sm"> {tier.price.toFixed(3)} SOL</p>

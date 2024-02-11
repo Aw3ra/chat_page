@@ -5,6 +5,7 @@ import bs58 from 'bs58';
 import { goto } from "$app/navigation";
 import { env } from "$env/dynamic/public";
 import { browser } from "$app/environment";
+import { userModal } from "./stores/userCreate";
 
 // For some reason this needs to be imported
 // even though not used.
@@ -44,7 +45,10 @@ export const isSigningIn = writable(false);
 export const isSignedIn = writable(false);
 
 // Call this to pop up the connect wallet modal
-export const connectWallet = () => isConnectingWallet.set(true);
+export const connectWallet = () => {
+    userModal.set({type: "signin"})
+    isConnectingWallet.set(true);
+}
 
 // hide connect wallet modal
 export const hideConnectWallet = () => isConnectingWallet.set(false);

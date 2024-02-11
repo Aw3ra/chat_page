@@ -54,7 +54,7 @@ export async function POST({ request }: RequestEvent) {
         return json({serialized});
     }
     catch(e){
-        console.error(e);
+        console.log(e);
         return json({error: "An error occurred"});
     }
 }

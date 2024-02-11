@@ -3,6 +3,8 @@ import type { RequestEvent } from "@sveltejs/kit";
 import { SHDW_PUBKEY } from "$env/static/private";
 import { decrypt } from "$lib/encryption";
 
+const { ENCRYPTION_KEY = "" } = process.env;
+
 
 // POST /api/user
 export async function POST({ request }: RequestEvent) {
@@ -13,13 +15,13 @@ export async function POST({ request }: RequestEvent) {
         if (!response.ok) {
             throw new Error(response.statusText)
         }
-        let data = await response.json()
+        // let data = await response.json()
 
-        // const { data, iv, tag} = await response.json()
-        // const decrypted = decrypt(data, iv, tag)
+        const { data, iv, tag} = await response.json()
+        const decrypted = decrypt(data, iv, tag)
         return json({
             status: 200,
-            body: data,
+            body: decrypted,
         })
     }
     catch (error) {
