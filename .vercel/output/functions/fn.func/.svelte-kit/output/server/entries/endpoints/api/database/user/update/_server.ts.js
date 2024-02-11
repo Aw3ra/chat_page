@@ -2,6 +2,7 @@ import { j as json } from "../../../../../../chunks/index.js";
 import { Connection, Keypair } from "@solana/web3.js";
 import { ShdwDrive } from "@shadow-drive/sdk";
 import { R as RPC_URL, S as SOLGPT_PRIV_KEY, a as SHDW_PUBKEY } from "../../../../../../chunks/private.js";
+import { e as encrypt } from "../../../../../../chunks/encryption.js";
 import anchor from "@project-serum/anchor";
 import bs58 from "bs58";
 async function POST({ request }) {
@@ -15,7 +16,8 @@ async function POST({ request }) {
   const wallet = new anchor.Wallet(keypair);
   const drive = await new ShdwDrive(connection, wallet).init();
   const acctPubKey = new anchor.web3.PublicKey(SHDW_PUBKEY);
-  const newUserBuffer = Buffer.from(JSON.stringify(data, null, 2));
+  const encryption = encrypt(JSON.stringify(data));
+  const newUserBuffer = Buffer.from(JSON.stringify(encryption, null, 2));
   const fileToUpload = {
     name: pubkey + ".json",
     file: newUserBuffer

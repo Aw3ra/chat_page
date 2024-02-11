@@ -23,10 +23,10 @@ export async function POST({ request }: RequestEvent) {
     const wallet = new anchor.Wallet(keypair);
     const drive = await new ShdwDrive(connection, wallet).init();
     const acctPubKey = new anchor.web3.PublicKey(SHDW_PUBKEY);
-    // const encryption = encrypt(JSON.stringify(data));
+    const encryption = encrypt(JSON.stringify(data));
     // Add the pubkey to the user type
     // Convert the user type to a buffer
-    const newUserBuffer = Buffer.from(JSON.stringify(data, null, 2));
+    const newUserBuffer = Buffer.from(JSON.stringify(encryption, null, 2));
     const fileToUpload = {
         name: pubkey+".json", 
         file: newUserBuffer
